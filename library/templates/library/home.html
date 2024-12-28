@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+</head>
+<body>
+    <h1>Available Books</h1>
+    <form method="get" action="">
+        <input type="text" name="q" placeholder="Search for books...">
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for book in books %}
+            <li>{{ book.title }} by {{ book.author.name }} (ISBN: {{ book.isbn }})
+                {% if user.is_authenticated %}
+                    <a href="{% url 'borrow_book' book.id %}">Borrow</a>
+                    {% for borrowing in book.borrowing_set.all %}
+                        {% if borrowing.member.email == user.email and not borrowing.return_date %}
+                            <a href="{% url 'return_book' borrowing.id %}">Return</a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'authors' %}">View Authors</a>
+    <a href="{% url 'members' %}">View Members</a>
+
+
+</body>
+</html>
